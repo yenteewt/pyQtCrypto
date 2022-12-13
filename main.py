@@ -5,7 +5,7 @@ from Crypto.Cipher import AES
 # Create the Model, which contains the data
 class Model:
     def __init__(self):
-        self.counter = 0
+        pass
 
 
 # Create the View, which contains the GUI elements
@@ -33,12 +33,6 @@ class View(tk.Tk):
         self.btnEncrypt.place(x=20, y=400)
 
 
-    # Method to update the label with the current value of the counter
-    def update_counter_label(self):
-        pass
-        #self.counter_label["text"] = f"Counter value: {self.model.counter}"
-
-    # Method to increment the counter and update the label
     def encrypt(self):
         nachricht = self.entPlain.get()
         key = b'09865rfqghlafgtz78nafg3q'
