@@ -32,6 +32,13 @@ class View(tk.Tk):
         self.btnEncrypt = tk.Button(master=self, text="encrypt", command=self.encrypt)
         self.btnEncrypt.place(x=20, y=400)
 
+    def decrypt(self, key, ciphertext, cipher):
+
+        nonce = cipher.nonce
+        cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+        plaintext = cipher.decrypt(ciphertext)
+
+        print(str(plaintext.decode()))
 
     def encrypt(self):
         nachricht = self.entPlain.get()
@@ -43,6 +50,7 @@ class View(tk.Tk):
         self.entDec.delete(0,100)
         self.entDec.insert(0, str(ciphertext))
 
+        self.decrypt(key, ciphertext, cipher)
 
 # Create the Controller, which contains the logic for the app
 class Controller:
