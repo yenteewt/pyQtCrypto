@@ -53,8 +53,6 @@ class Controller:
         # Create an instance of the View
         self.view = View(self.model)
 
-        # Update the counter label with the initial value of the counter
-        self.view.update_counter_label()
         self.view.mainloop()
 
 
