@@ -1,21 +1,20 @@
 # Import the necessary modules
 import tkinter as tk
+import base64
 from Crypto.Cipher import AES
 
 # Create the Model, which contains the data
 class Model:
-    def __init__(self):
-        pass
+    def __init__(self, clearText, encryptedText):
+        self.clearText = clearText
+        self.encryptedtText = encryptedText
 
 
 # Create the View, which contains the GUI elements
-class View(tk.Tk):
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-
-        self.title("PyCrypto")
-        self.geometry("640x480")
+class View(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
 
         self.entPlain = tk.Entry(master=self, width=100)
         self.entPlain.place(x=20, y=40)
@@ -32,6 +31,13 @@ class View(tk.Tk):
         self.btnEncrypt = tk.Button(master=self, text="encrypt", command=self.encrypt)
         self.btnEncrypt.place(x=20, y=400)
 
+        self.label1.pack()
+        self.entPlain.pack()
+        self.label2.pack()
+        self.entDec.pack()
+
+        self.btnEncrypt.pack()
+
     def decrypt(self, key, ciphertext, cipher):
 
         nonce = cipher.nonce
@@ -41,28 +47,42 @@ class View(tk.Tk):
         print(str(plaintext.decode()))
 
     def encrypt(self):
+
+        inputText= self.entPlain.get()
+        model = self.controller.encrypt(inputText)
+
         nachricht = self.entPlain.get()
-        key = b'09865rfqghlafgtz78nafg3q'
-        cipher = AES.new(key, AES.MODE_EAX)
-        data = str.encode(nachricht)
-        ciphertext, messageDigest = cipher.encrypt_and_digest(data)
 
         self.entDec.delete(0,100)
-        self.entDec.insert(0, str(ciphertext))
-
-        self.decrypt(key, ciphertext, cipher)
+        self.entDec.insert(0, str(model.encryptedtText))
 
 # Create the Controller, which contains the logic for the app
 class Controller:
     def __init__(self):
         # Create an instance of the Model
-        self.model = Model()
+        self.key = b'09865rfqghlafgtz78nafg3q'
+        self.cipher = AES.new(self.key, AES.MODE_EAX)
 
-        # Create an instance of the View
-        self.view = View(self.model)
+    def encrypt(self, input_text):
+        # Verschlüssele die Eingabe mit AES
+        nonce = self.cipher.nonce
+        ciphertext, tag = self.cipher.encrypt_and_digest(input_text.encode())
 
-        self.view.mainloop()
+        # Konvertiere das verschlüsselte Ergebnis in base64, damit es angezeigt werden kann
+        encrypted_text_base64 = base64.b64encode(nonce + tag + ciphertext).decode()
+
+        # Erstelle ein neues TextModel-Objekt mit dem Klartext und dem verschlüsselten Text
+        model = Model(input_text, encrypted_text_base64)
+        return model
 
 
 # Create an instance of the Controller
+window = tk.Tk()
+window.title("PyCryptor")
+window.geometry('640x480')
+
+# Erstelle den Controller und die View
 controller = Controller()
+view = View(window, controller)
+view.pack()
+window.mainloop()
