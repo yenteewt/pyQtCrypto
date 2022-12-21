@@ -39,12 +39,7 @@ class View(tk.Frame):
         self.btnEncrypt.pack()
 
     def decrypt(self, key, ciphertext, cipher):
-
-        nonce = cipher.nonce
-        cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
-        plaintext = cipher.decrypt(ciphertext)
-
-        print(str(plaintext.decode()))
+        pass
 
     def encrypt(self):
 
@@ -59,7 +54,6 @@ class View(tk.Frame):
 # Create the Controller, which contains the logic for the app
 class Controller:
     def __init__(self):
-        # Create an instance of the Model
         self.key = b'09865rfqghlafgtz78nafg3q'
         self.cipher = AES.new(self.key, AES.MODE_EAX)
 
@@ -71,7 +65,7 @@ class Controller:
         # Konvertiere das verschlüsselte Ergebnis in base64, damit es angezeigt werden kann
         encrypted_text_base64 = base64.b64encode(nonce + tag + ciphertext).decode()
 
-        # Erstelle ein neues TextModel-Objekt mit dem Klartext und dem verschlüsselten Text
+        # Erstelle ein neues Model-Objekt mit dem Klartext und dem verschlüsselten Text
         model = Model(input_text, encrypted_text_base64)
         return model
 
